@@ -82,10 +82,10 @@ class ContactFormTester:
                 response = requests.post(f"{self.base_url}/contact", json=test_data)
                 print(f"Missing {missing_fields[i]} - Status: {response.status_code}")
                 
-                if response.status_code == 400:
+                if response.status_code == 422:
                     print(f"✅ Correctly rejected missing {missing_fields[i]}")
                 else:
-                    print(f"❌ Should have returned 400 for missing {missing_fields[i]}")
+                    print(f"❌ Should have returned 422 for missing {missing_fields[i]}")
                     all_passed = False
                     
             except Exception as e:
