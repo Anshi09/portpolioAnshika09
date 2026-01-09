@@ -228,9 +228,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Contact Form Submission API"
     - "Contact Form with Backend Integration"
-    - "Get Contact Submissions API"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
