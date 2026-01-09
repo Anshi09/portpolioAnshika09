@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send, Mail, User, Building2, DollarSign, MessageSquare } from 'lucide-react';
+import { Send, Mail, User, Building2, DollarSign, MessageSquare, Loader2 } from 'lucide-react';
 import { Card, CardContent } from './ui/card';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
@@ -9,9 +9,13 @@ import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { useToast } from '../hooks/use-toast';
 import { personalInfo } from '../data/mock';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ContactSection = () => {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -49,28 +53,45 @@ const ContactSection = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
-      // Mock submission - will be connected to backend later
-      console.log('Form submitted:', formData);
+      setIsSubmitting(true);
       
-      toast({
-        title: "Message Sent!",
-        description: "Thanks for reaching out! I'll get back to you within 24-48 hours.",
-      });
-      
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        company: '',
-        projectType: '',
-        budget: '',
-        message: ''
-      });
-      setErrors({});
+      try {
+        const response = await axios.post(`${BACKEND_URL}/api/contact`, formData);
+        
+        toast({
+          title: "Message Sent!",
+          description: response.data.message,
+        });
+        
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          company: '',
+          projectType: '',
+          budget: '',
+          message: ''
+        });
+        setErrors({});
+      } catch (error) {
+        console.error('Contact form error:', error);
+        
+        const errorMessage = error.response?.data?.detail 
+          || error.response?.data?.error 
+          || "Failed to send message. Please try again or email directly at " + personalInfo.email;
+        
+        toast({
+          title: "Error",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
