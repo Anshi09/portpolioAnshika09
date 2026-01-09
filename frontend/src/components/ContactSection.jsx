@@ -313,10 +313,20 @@ const ContactSection = () => {
                   {/* Submit Button */}
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-cyan-500 to-teal-400 hover:from-cyan-600 hover:to-teal-500 text-black font-semibold py-6 text-lg group"
+                    disabled={isSubmitting}
+                    className="w-full bg-gradient-to-r from-cyan-500 to-teal-400 hover:from-cyan-600 hover:to-teal-500 text-black font-semibold py-6 text-lg group disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Send className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" />
-                    Send Message
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" />
+                        Send Message
+                      </>
+                    )}
                   </Button>
                 </form>
               </CardContent>
